@@ -103,32 +103,34 @@ fn part_two() {
     ]
     .as_slice();
     if let Ok(lines) = read_lines("input.txt") {
-        lines.map_while(Result::ok).for_each(|line: String| {
-            println!("{}", line);
-            let mut matches: Vec<Match> = vec![];
-            for search_value in search_values {
-                line.match_indices(search_value.digit).for_each(|(idx, _)| {
-                    matches.push(Match {
-                        value: search_value.value,
-                        index: idx as u32,
-                    });
-                });
-                line.match_indices(search_value.substring)
-                    .for_each(|(idx, _)| {
+        let result = lines
+            .map_while(Result::ok)
+            .fold(0u32, |acc: u32, line: String| {
+                let mut matches: Vec<Match> = vec![];
+                for search_value in search_values {
+                    line.match_indices(search_value.digit).for_each(|(idx, _)| {
                         matches.push(Match {
                             value: search_value.value,
                             index: idx as u32,
                         });
                     });
-            }
-            matches.sort_by_key(|m| m.index);
-            let first = matches.first().unwrap();
-            let last = matches.last().unwrap();
-            let num_string: String = format!("{}{}", first.value, last.value);
-            let num: u32 = num_string.parse().unwrap();
+                    line.match_indices(search_value.substring)
+                        .for_each(|(idx, _)| {
+                            matches.push(Match {
+                                value: search_value.value,
+                                index: idx as u32,
+                            });
+                        });
+                }
+                matches.sort_by_key(|m| m.index);
+                let first = matches.first().unwrap();
+                let last = matches.last().unwrap();
+                let num_string: String = format!("{}{}", first.value, last.value);
+                let num: u32 = num_string.parse().unwrap();
 
-            println!("{}", num);
-        });
+                acc + num
+            });
+        println!("{}", result);
     }
 }
 
