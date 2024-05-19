@@ -2,12 +2,11 @@ use std::{
     fs::File,
     io::{self, BufRead},
     path::Path,
-    vec,
 };
 
 fn main() {
     if let Ok(lines) = read_lines("input.txt") {
-        lines.map_while(Result::ok).for_each(|line| {
+        lines.map_while(Result::ok).for_each(|line: String| {
             println!("{}", line);
             let mut first: Option<char> = None;
             let mut last: Option<char> = None;
@@ -23,7 +22,9 @@ fn main() {
                     break;
                 }
             }
-            println!("{} {}", first.unwrap(), last.unwrap());
+            let num_string: String = format!("{}{}", first.unwrap(), last.unwrap());
+            let num: u8 = num_string.parse().unwrap();
+            println!("{} {}, {}", first.unwrap(), last.unwrap(), num);
         });
     }
 }
