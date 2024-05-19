@@ -6,26 +6,28 @@ use std::{
 
 fn main() {
     if let Ok(lines) = read_lines("input.txt") {
-        lines.map_while(Result::ok).for_each(|line: String| {
-            println!("{}", line);
-            let mut first: Option<char> = None;
-            let mut last: Option<char> = None;
-            for char in line.chars() {
-                if char.is_ascii_digit() {
-                    first = Some(char);
-                    break;
+        let result = lines
+            .map_while(Result::ok)
+            .fold(0u32, |acc: u32, line: String| {
+                let mut first: Option<char> = None;
+                let mut last: Option<char> = None;
+                for char in line.chars() {
+                    if char.is_ascii_digit() {
+                        first = Some(char);
+                        break;
+                    }
                 }
-            }
-            for char in line.chars().rev() {
-                if char.is_ascii_digit() {
-                    last = Some(char);
-                    break;
+                for char in line.chars().rev() {
+                    if char.is_ascii_digit() {
+                        last = Some(char);
+                        break;
+                    }
                 }
-            }
-            let num_string: String = format!("{}{}", first.unwrap(), last.unwrap());
-            let num: u8 = num_string.parse().unwrap();
-            println!("{} {}, {}", first.unwrap(), last.unwrap(), num);
-        });
+                let num_string: String = format!("{}{}", first.unwrap(), last.unwrap());
+                let num: u32 = num_string.parse().unwrap();
+                acc + num
+            });
+        println!("{}", result);
     }
 }
 
