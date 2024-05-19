@@ -2,12 +2,28 @@ use std::{
     fs::File,
     io::{self, BufRead},
     path::Path,
+    vec,
 };
 
 fn main() {
     if let Ok(lines) = read_lines("input.txt") {
         lines.map_while(Result::ok).for_each(|line| {
             println!("{}", line);
+            let mut first: Option<char> = None;
+            let mut last: Option<char> = None;
+            for char in line.chars() {
+                if char.is_ascii_digit() {
+                    first = Some(char);
+                    break;
+                }
+            }
+            for char in line.chars().rev() {
+                if char.is_ascii_digit() {
+                    last = Some(char);
+                    break;
+                }
+            }
+            println!("{} {}", first.unwrap(), last.unwrap());
         });
     }
 }
