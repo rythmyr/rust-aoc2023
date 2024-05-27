@@ -56,7 +56,36 @@ fn part_one() {
 }
 
 fn part_two() {
-    println!("unimplemented");
+    if let Ok(lines) = read_lines("input.txt") {
+        let mut sum: u32 = 0;
+        for line in lines.map_while(Result::ok) {
+            let id_game_pair = line.split(": ").collect::<Vec<&str>>();
+            println!("{}", line);
+
+            let mut max_red: u8 = 0;
+            let mut max_green: u8 = 0;
+            let mut max_blue: u8 = 0;
+
+            for round in id_game_pair[1].split("; ") {
+                for reveal in round.split(", ") {
+                    let color_and_count: Vec<&str> = reveal.split(' ').collect();
+                    let count: u8 = color_and_count[0].parse().unwrap();
+                    let color = color_and_count[1];
+
+                    match color {
+                        "red" => max_red = std::cmp::max(max_red, count),
+                        "blue" => max_blue = std::cmp::max(max_blue, count),
+                        "green" => max_green = std::cmp::max(max_green, count),
+                        _ => panic!("unexpected value for color {}", color),
+                    };
+                }
+            }
+            let power = max_red as u32 * max_green as u32 * max_blue as u32;
+
+            sum += power;
+        }
+        println!("sum of powers: {}", sum);
+    }
 }
 
 // The output is wrapped in a Result to allow matching on errors
